@@ -20,6 +20,7 @@ def main():
 	parser = argparse.ArgumentParser(description="This program constructs box plots based on subsets of data in a matrix")
 	parser.add_argument('-x', nargs='?', type=str, help="matrix File", required=True)
 	parser.add_argument('-i', nargs='?', type=str, help="identifiers (comma separated)", required=False)
+	parser.add_argument('-ia', nargs='?', type=str, help="identifier new label (comma separated)", required=False)
 	parser.add_argument('-t', nargs='?', type=str, help="plot title", required=False)
 
 
@@ -35,6 +36,12 @@ def createPlot(args):
 
 	else:
 		identifiers = ['']
+
+	if args.ia:
+		newLabels = args.ia.split(',')
+
+	else:
+		newLabels = identifiers
 
 	data = []
 	to_data = []
@@ -53,11 +60,19 @@ def createPlot(args):
 	ax1.set_title(args.t)
 	ax1.set_xlabel('Groups')
 	ax1.set_ylabel('ANI values')
+	top = 1.00
+	bottom = 0.96
+
+	ax1.set_ylim(bottom, top)
 
 	comparisons = []
 	for i in range(0,len(identifiers)-1):
 		for j in range(i, len(identifiers)):
-			comparisons.append(str(identifiers[i]) + ' vs ' + identifiers[j])
+
+			if len(identifiers) == len(newLabels):
+				comparisons.append(str(newLabels[i]) + ' / ' + newLabels[j])
+			else:
+				comparisons.append(str(identifiers[i]) + ' / ' + identifiers[j])
 			new_values = filter_by_indentifier(matrix, identifiers[i], identifiers[j])
 
 			for j in new_values[0]:
@@ -67,14 +82,14 @@ def createPlot(args):
 			to_data = []
 
 
-			bp = plt.boxplot(data, notch=0, sym='+', vert=1, whis=1.5)
-			plt.setp(bp['boxes'], color='black')
-			plt.setp(bp['whiskers'], color='black')
-			plt.setp(bp['fliers'], color='red', marker='+')
-
-
 		# Set the axes ranges and axes labels
 		print i
+	bp = plt.boxplot(data)
+
+	plt.setp(bp['boxes'], color='black')
+	plt.setp(bp['whiskers'], color='black')
+	plt.setp(bp['fliers'], color='red', marker='+')
+
 	xtickNames = plt.setp(ax1, xticklabels=comparisons)
 	plt.setp(xtickNames, rotation=45, fontsize=8)
 
@@ -83,9 +98,9 @@ def createPlot(args):
 	resultFile = resultFile.replace(':', '_')
 	resultFile = resultFile.replace('.', '_', 1)
 
-	resultFileName = resultFile + '.jpg'
+	resultFileName = resultFile + '.tif'
 
-	plt.savefig(resultFileName)
+	plt.savefig(resultFileName, dpi=300)
 
 	plt.show()
 
