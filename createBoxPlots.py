@@ -98,7 +98,7 @@ def createPlot(args):
 	resultFile = resultFile.replace(':', '_')
 	resultFile = resultFile.replace('.', '_', 1)
 
-	resultFileName = resultFile + '.tif'
+	resultFileName = resultFile + '.pdf'
 
 	plt.savefig(resultFileName, dpi=300)
 
