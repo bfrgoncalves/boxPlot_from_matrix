@@ -66,7 +66,7 @@ def createPlot(args):
 	ax1.set_ylim(bottom, top)
 
 	comparisons = []
-	for i in range(0,len(identifiers)-1):
+	for i in range(0,len(identifiers)):
 		for j in range(i, len(identifiers)):
 
 			if len(identifiers) == len(newLabels):
